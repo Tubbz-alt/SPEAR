@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="SPEAR.Views.LoadingSpinner"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SPEAR.Views"
+             mc:Ignorable="d" 
+             x:Name="_spinnerUserControl"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Visibility="{Binding SpinnerVisibility, Mode=OneWay}">
+
+
+    <UserControl.Resources>
+        <Storyboard x:Key="StoryboardKey" RepeatBehavior="Forever" SpeedRatio="1" SlipBehavior="Grow" Duration="00:00:04.500" AutoReverse="True" >
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00.500" Storyboard.TargetName="Ellipse1" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00.722" Storyboard.TargetName="Ellipse2" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00.944" Storyboard.TargetName="Ellipse3" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:01.167" Storyboard.TargetName="Ellipse4" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:01.389" Storyboard.TargetName="Ellipse5" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:01.611" Storyboard.TargetName="Ellipse6" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:01.834" Storyboard.TargetName="Ellipse7" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames BeginTime="00:00:02.056" Storyboard.TargetName="Ellipse8" IsAdditive="False"
+                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)">
+                <SplineDoubleKeyFrame KeyTime="00:00:02.000" Value="405"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#ffffffff">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!--Background-->
+        
+
+        <Canvas VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Height="70" Width="70" Margin="0,0,0,20">
+            <Canvas.Resources>
+                <Style x:Key="EllipseStyle" TargetType="Ellipse">
+                    <Setter Property="Width" Value="10"/>
+                    <Setter Property="Height" Value="10"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="Canvas.Left" Value="60"/>
+                    <Setter Property="Canvas.Top" Value="30"/>
+                    <Setter Property="Opacity" Value="0.3"/>
+                    <Setter Property="Fill" Value="{StaticResource cDarkBlue}"/>
+                </Style>
+            </Canvas.Resources>
+
+            <!--Spinner Visual (Ellipse1)-->
+            <Ellipse x:Name="Ellipse1" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="0"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse2)-->
+            <Ellipse x:Name="Ellipse2" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="45"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse3)-->
+            <Ellipse x:Name="Ellipse3" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="90"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse4)-->
+            <Ellipse x:Name="Ellipse4" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="135"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse5)-->
+            <Ellipse x:Name="Ellipse5" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="180"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse6)-->
+            <Ellipse x:Name="Ellipse6" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="225"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse7)-->
+            <Ellipse x:Name="Ellipse7" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="270"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!--Spinner Visual (Ellipse8)-->
+            <Ellipse x:Name="Ellipse8" Style="{StaticResource EllipseStyle}">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform CenterX="-30" CenterY="0"/>
+                        <RotateTransform CenterX="-30" CenterY="0" Angle="315"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+        </Canvas>
+
+        <!--Text-->
+        <TextBlock Text="{Binding DisplayedText}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,20"
+                   FontWeight="Medium" Width="180" Foreground="{StaticResource cDarkGray}" FontFamily="Calibri"/>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,26 @@
+﻿<Application x:Class="SPEAR.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SPEAR"
+             StartupUri="MainWindow.xaml">
+    
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--CUSTOM THEME COLORS-->
+                <ResourceDictionary Source="/SPEAR;component/Themes/aColors.xaml"/>
+
+                <!--CUSTOM UIELEMENT STYLES-->
+                <ResourceDictionary Source="/SPEAR;component/Themes/cTextBlocks.xaml"/>
+                <ResourceDictionary Source="/SPEAR;component/Themes/cButtons.xaml"/>
+                <ResourceDictionary Source="/SPEAR;component/Themes/cTextBoxes.xaml"/>
+                <ResourceDictionary Source="/SPEAR;component/Themes/cComboBoxes.xaml"/>
+
+                <!--DATA TRIGGERS-->
+
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    
+</Application>

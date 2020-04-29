@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace SPEAR.Models
+{
+    public struct NuclideID
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Properties
+        /////////////////////////////////////////////////////////////////////////////////////////
+        public string NuclideName { get; set; }
+        public double Confidence { get; set; }
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////
+        public NuclideID(string nuclideName, double confidence)
+        {
+            NuclideName = nuclideName;
+            Confidence = confidence;
+        }
+
+    }
+}
