@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?define ReleaseDir="$(var.SPEAR.TargetDir)"?>
+
+  <Product Id="*"
+           Name="SPEAR"
+           Language="1033"
+           Version="!(bind.fileVersion.SPEARExe)"
+           Manufacturer="PNNL"
+           UpgradeCode="0920B240-7398-4930-B0FD-D0455F5C0B49">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Description="SPEAR parsers radiation detector spectrum files for analysis."/>
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of SPEAR is already installed." />
+    <MediaTemplate EmbedCab="yes"/>
+
+    <!-- Create install directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!-- Program Files folder -->
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="SPEAR">
+          <Directory Id="UserGuidesFolder" Name="UserGuides"/>
+          <Directory Id="x86Folder" Name="x86"/>
+          <Directory Id="x64Folder" Name="x64"/>
+        </Directory>
+      </Directory>
+      <!-- Start Menu folder -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="SPEAR"/>
+      </Directory>
+      <!-- Desktop folder -->
+      <Directory Id="DesktopFolder" Name="Desktop"/>
+    </Directory>
+
+    <!-- Files to be put into the install directory -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="SQLite" Guid="{156F0AD2-26C3-45F1-BAE5-5E413AA2AEB8}">
+        <File Id="SQLite_dll" Source="$(var.ReleaseDir)System.Data.SQLite.dll"/>
+        <File Id="SQLite_config" Source="$(var.ReleaseDir)System.Data.SQLite.dll.config"/>
+      </Component>
+      <Component Id="SPEARExe" Guid="{74F4073D-375E-4971-8046-D9495E1F7ACD}">
+        <File Id="SPEARExe" Source="$(var.ReleaseDir)SPEAR.exe"/>
+        <File Id="SPEARExeConfig" Source="$(var.ReleaseDir)SPEAR.exe.config"/>
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="UserGuidesFolder">
+      <Component Id="UserGuide">
+        <File Id="UserGuide" Source="$(var.ReleaseDir)UserGuides/SPEAR-UserGuide.pdf"/>
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="x86Folder">
+      <Component Id="SQLite_interop_x86">
+        <File Id="SQLite_interop_dll_x86" Source="$(var.ReleaseDir)x86/SQLite.Interop.dll"/>
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="x64Folder">
+      <Component Id="SQLite_interop_x64">
+        <File Id="SQLite_interop_dll_x64" Source="$(var.ReleaseDir)x64/SQLite.Interop.dll"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Setup for windows start menu shortcut -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationMenuShortcut">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="SPEAR" Description="Spectra Parser for Easy Analysis of Results" Target="[#SPEARExe]" WorkingDirectory="INSTALLFOLDER"/>
+        <Shortcut Id="ApplicationUserGuideMenuShortcut" Name="User Guide" Description="SPEAR User Guide" Target="[#UserGuide]" WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\PNNL\SPEAR" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Setup for windows desktop shortcut -->
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="{79AB689A-8544-4EC0-932B-A6190F2CC7CA}">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="SPEAR" Description="Spectra Parser for Easy Analysis of Results" Target="[#SPEARExe]" WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\PNNL\SPEAR" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Tell WiX to install all our components -->
+    <Feature Id="MainApplication" Title="SPEAR" Level="1">
+      <ComponentRef Id="SPEARExe" />
+      <ComponentRef Id="ApplicationMenuShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+      <ComponentRef Id="SQLite" />
+      <ComponentRef Id="SQLite_interop_x86" />
+      <ComponentRef Id="SQLite_interop_x64" />
+      <ComponentRef Id="UserGuide" />
+    </Feature>
+    
+  </Product>
+</Wix>

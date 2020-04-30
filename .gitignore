@@ -1,0 +1,67 @@
+# Itself #
+##########
+#.gitignore
+
+# HATS Specific #
+#################
+HATS_TemporaryKey.pfx
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+/packages/*
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+ 
+# Subversion files #
+####################
+.svn
+
+# Visual Studio #
+#################
+.vs
+*.cache
+*.g.i.cs
+*/obj/*
+*/bin/*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.VC.db
+
+# MATLAB tmp files and #
+# publishing folder    #
+########################
+*.asv
+html/
+IdentiFinder/Test.iss
+/MigrationBackup/c3c63b5d/HealthStatus.Prod

@@ -1,0 +1,47 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SPEAR.Themes">
+
+
+    <!--Application Theme Colors-->
+    <Color x:Key="cColorDarkBlue">#FF3D5589</Color>
+    <Color x:Key="cColorMediumBlue">#FFA5C1FD</Color>
+    <Color x:Key="cColorLightBlue">#FFB8CDFB</Color>
+
+    <Color x:Key="cColorDarkGray">#FF555555</Color>
+    <Color x:Key="cColorMediumGray">#FF888888</Color>
+    <Color x:Key="cColorLightGray">#FFDDDDDD</Color>
+
+    <Color x:Key="cColorOffLightOrange" A="255" R="255" G="231" B="163"/>
+    <Color x:Key="cColorOffMediumOrange" A="255" R="255" G="209" B="73"/>
+
+    <Color x:Key="cColorTransparentGray">#AAEEEEEE</Color>
+    <Color x:Key="cColorTransparentDarkGray">#22555555</Color>
+
+    <Color x:Key="zAnalysisColorPass" A="255" R="64" G="160" B="0"/>
+    <Color x:Key="zAnalysisColorFail" A="255" R="183" G="32" B="32"/>
+
+
+    <!--Application Theme SolidColorBrushes-->
+    <SolidColorBrush x:Key="cDarkBlue" Color="{StaticResource cColorDarkBlue}"/>
+    <SolidColorBrush x:Key="cMediumBlue" Color="{StaticResource cColorMediumBlue}"/>
+    <SolidColorBrush x:Key="cLightBlue" Color="{StaticResource cColorLightBlue}"/>
+
+    <SolidColorBrush x:Key="cDarkGray" Color="{StaticResource cColorDarkGray}"/>
+    <SolidColorBrush x:Key="cMediumGray" Color="{StaticResource cColorMediumGray}"/>
+    <SolidColorBrush x:Key="cLightGray" Color="{StaticResource cColorLightGray}"/>
+
+    <SolidColorBrush x:Key="cLightBlueGray" Color="#FFE2E5E9"/>
+
+    <SolidColorBrush x:Key="cOffLightOrange" Color="{StaticResource cColorOffLightOrange}"/>
+    <SolidColorBrush x:Key="cOffMediumOrange" Color="{StaticResource cColorOffMediumOrange}"/>
+
+    <SolidColorBrush x:Key="cTransparentGray" Color="{StaticResource cColorTransparentGray}"/>
+    <SolidColorBrush x:Key="cTransparentDarkGray" Color="{StaticResource cColorTransparentDarkGray}"/>
+
+    <SolidColorBrush x:Key="zAnalysisPass" Color="{StaticResource zAnalysisColorPass}"/>
+    <SolidColorBrush x:Key="zAnalysisFail" Color="{StaticResource zAnalysisColorFail}"/>
+    <SolidColorBrush x:Key="zAnalysisDefault" Color="{StaticResource cColorDarkGray}"/>
+
+
+</ResourceDictionary>
