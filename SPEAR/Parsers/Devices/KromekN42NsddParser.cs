@@ -1,19 +1,18 @@
 ﻿using SPEAR.Models;
-using SPEAR.Models.N42.v2011;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using SPEAR.Models.N42.v2011;
 using System.Xml.Serialization;
 
 namespace SPEAR.Parsers.Devices
 {
-    public class FlirR400N42Parser : FileParser
+    public class KromekN42NsddParser : FileParser
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Properties
@@ -27,13 +26,13 @@ namespace SPEAR.Parsers.Devices
 
         private IEnumerable<string> filePaths;
 
-        public override string FileName { get { return "FlirR400_N42"; } }
+        public override string FileName { get { return "Kromek_N42_NSDD"; } }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public FlirR400N42Parser()
+        public KromekN42NsddParser()
         {
             fileErrors = new List<KeyValuePair<string, string>>();
         }
@@ -45,7 +44,7 @@ namespace SPEAR.Parsers.Devices
         /////////////////////////////////////////////////////////////////////////////////////////
         public override IEnumerable<string> GetAllFilePaths(string directoryPath)
         {
-            return Directory.GetFiles(directoryPath, "*.n42");
+            return Directory.GetFiles(directoryPath, "*.xml");
         }
 
         public override void InitializeFilePaths(IEnumerable<string> allFilePaths)
@@ -73,7 +72,7 @@ namespace SPEAR.Parsers.Devices
         /////////////////////////////////////////////////////////////////////////////////////////
         private void ParseFiles()
         {
-            SortedList<DateTime, DeviceData> sortedDeviceDatas = new SortedList<DateTime, DeviceData>();
+            SortedList<DateTime, DeviceData> kromeks = new SortedList<DateTime, DeviceData>();
 
             // Start Thread that archives .N42 files
             ThreadStart threadStart = new ThreadStart(ArchiveFiles);
@@ -81,7 +80,7 @@ namespace SPEAR.Parsers.Devices
             thread.Start();
 
             // Parse spe files
-            int filesCompleted = 0;
+            var filesCompleted = 0;
             foreach (string filePath in filePaths)
             {
                 Invoke_ParsingUpdate((float)filesCompleted++ / (float)filePaths.Count());
@@ -97,7 +96,7 @@ namespace SPEAR.Parsers.Devices
                     continue;
 
                 // Create RadSeeker and set FileName
-                deviceData = new DeviceData(DeviceInfo.Type.FlirR400);
+                deviceData = new DeviceData(DeviceInfo.Type.KromekD3SDhs);
                 deviceData.FileName = fileName;
 
                 // Parse data from N42 object
@@ -105,14 +104,14 @@ namespace SPEAR.Parsers.Devices
                     continue;
 
                 // Add to other parsed
-                if (sortedDeviceDatas.ContainsKey(deviceData.StartDateTime))
+                if (kromeks.ContainsKey(deviceData.StartDateTime))
                     continue;
-                sortedDeviceDatas.Add(deviceData.StartDateTime, deviceData);
+                kromeks.Add(deviceData.StartDateTime, deviceData);
             }
 
             // Number all the events
-            int trailNumber = 1;
-            foreach (KeyValuePair<DateTime, DeviceData> device in sortedDeviceDatas)
+            var trailNumber = 1;
+            foreach (KeyValuePair<DateTime, DeviceData> device in kromeks)
                 device.Value.TrialNumber = trailNumber++;
 
             if (ErrorsOccurred)
@@ -133,7 +132,7 @@ namespace SPEAR.Parsers.Devices
             // Wait for thread to zip files
             thread.Join();
 
-            deviceDatasParsed = sortedDeviceDatas.Values.ToList();
+            deviceDatasParsed = kromeks.Values.ToList();
         }
 
         private void Clear()
@@ -202,7 +201,7 @@ namespace SPEAR.Parsers.Devices
                 AnalysisResultsType analysisResultsType = null;
                 RadMeasurementType radMeasurementType = null;
                 bool analysisFound = false, radMeasurementFound = false;
-                for (int i = 0; i < itemsElementNames.Count(); i += 1)
+                for (var i = 0; i < itemsElementNames.Count(); i += 1)
                 {
                     if (analysisFound == false)
                     {
@@ -224,59 +223,41 @@ namespace SPEAR.Parsers.Devices
                         }
                     }
 
-                    if (analysisFound && radMeasurementFound)
+                    if (analysisFound && analysisFound)
                         break;
                 }
 
-                if (radMeasurementFound == true)
+                if (radMeasurementFound == false || analysisFound == false)
+                    return false;
+
+                // Get StartTime
+                deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
+
+                // Get MeasureTime
+                string value = radMeasurementType.RealTimeDuration.Remove(0, 2);
+                value = value.Remove(value.Length - 1, 1);
+                deviceData.MeasureTime = new TimeSpan(0, 0, (int)Math.Round(double.Parse(value)));
+
+                // Get CountRate
+                var channelDataText = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text;
+                var sum = channelDataText
+                    .Replace("\t", string.Empty)
+                    .Replace("\n", string.Empty)
+                    .Split(Globals.Delim_Space, StringSplitOptions.RemoveEmptyEntries)
+                    .Sum(c => int.Parse(c));
+                deviceData.CountRate = sum / deviceData.MeasureTime.TotalSeconds;
+
+                // Get Identified Nuclides
+                var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
+                for (var i = 0; i < nuclides.Count(); i += 1)
                 {
-                    // Get StartTime
-                    deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
-
-                    // Get MeasureTime
-                    var value = radMeasurementType.RealTimeDuration.Remove(0, 2);
-                    var mIndex = value.IndexOf("M");
-                    var sIndex = value.IndexOf("S");
-                    var periodIndex = value.IndexOf(".");
-
-                    if (mIndex != -1 && periodIndex != -1 && sIndex != -1)
+                    var elementNames = nuclides[i].ItemsElementName;
+                    for (var c = 0; c < elementNames.Length; c += 1)
                     {
-                        deviceData.MeasureTime = new TimeSpan(0, 0,
-                            int.Parse(value.Substring(0, mIndex)),
-                            int.Parse(value.Substring(mIndex + 1, periodIndex - mIndex - 1)),
-                            int.Parse(value.Substring(periodIndex + 1, 3)));
-                    }
-                    else if (mIndex != -1 && sIndex != -1)
-                        deviceData.MeasureTime = new TimeSpan(0,
-                            int.Parse(value.Substring(0, mIndex)),
-                            int.Parse(value.Substring(mIndex + 1, sIndex - mIndex - 1)));
-                    else if (mIndex != -1)
-                        deviceData.MeasureTime = new TimeSpan(0, int.Parse(value.Substring(0, mIndex)), 0);
-                    else if (sIndex != -1)
-                        deviceData.MeasureTime = new TimeSpan(0, 0, int.Parse(value.Substring(0, sIndex)));
-
-                    // Get CountRate
-                    int sum = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text
-                        .Split(Globals.Delim_Space, StringSplitOptions.RemoveEmptyEntries)
-                        .Sum(c => int.Parse(c));
-                    deviceData.CountRate = sum / deviceData.MeasureTime.TotalSeconds;
-                
-            }
-
-                // Get Nuclides
-                if (analysisFound == true)
-                {
-                    var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
-                    for (int i = 0; i < nuclides.Count(); i += 1)
-                    {
-                        var elementNames = nuclides[i].ItemsElementName;
-                        for (int c = 0; c < elementNames.Length; c += 1)
+                        if (elementNames[c] == ItemsChoiceType.NuclideIDConfidenceValue)
                         {
-                            if (elementNames[c] == ItemsChoiceType.NuclideIDConfidenceValue)
-                            {
-                                deviceData.Nuclides[i] = new NuclideID(nuclides[i].NuclideName, Convert.ToDouble(nuclides[i].Items[c]));
-                                break;
-                            }
+                            deviceData.Nuclides[i] = new NuclideID(nuclides[i].NuclideName.Replace('_', '-'), (double)nuclides[i].Items[c]);
+                            break;
                         }
                     }
                 }

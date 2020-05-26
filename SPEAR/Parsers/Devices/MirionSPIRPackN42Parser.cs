@@ -231,7 +231,7 @@ namespace SPEAR.Parsers.Devices
                 if (radMeasurementFound == true)
                 {
                     // Get StartTime
-                    deviceData.StartDateTime = radMeasurementType.StartDateTime;
+                    deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
 
                     // Get MeasureTime
                     var value = radMeasurementType.RealTimeDuration.Remove(0, 2);

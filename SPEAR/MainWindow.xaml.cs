@@ -1,6 +1,7 @@
 ﻿using SPEAR.Models;
 using SPEAR.Models.Devices;
 using SPEAR.Parsers;
+using SPEAR.Parsers.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,12 +52,16 @@ namespace SPEAR
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "AISense", Tag = new AISense() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Arktis P2000", Tag = new ArktisP2000() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "AtomTex", Tag = new AtomTex() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "AtomTex AT6101C", Tag = new AtomTexAT6101C() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "AtomTex AT6103", Tag = new AtomTexAT6103() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "BNC SAM 950", Tag = new BNCSam() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "BubbleTech FlexSpec", Tag = new BubbleTechFlexSpec() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Detective X", Tag = new DetectiveX() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Flir identiFINDER", Tag = new IdentiFINDER() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Flir R400", Tag = new FlirR400() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Flir R500", Tag = new FlirR500() });
-            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Kromek D3S", Tag = new KromekD3S() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Kromek D3S (DHS)", Tag = new KromekD3SDhs() }); 
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Kromek D3S (NSDD)", Tag = new KromekD3SNsdd() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Mirion Spirident Mobile", Tag = new MirionSpirdentMobile() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Mirion SpirPack", Tag = new MirionSpirPack() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "NucTech", Tag = new NucTech() });

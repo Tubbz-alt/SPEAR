@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace SPEAR.Models.Devices
 {
-    public class KromekD3S : DeviceInfo
+    public class KromekD3SNsdd : DeviceInfo
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public KromekD3S()
+        public KromekD3SNsdd()
         {
             // Set defaults
-            DeviceTypeEnum = Type.KromekD3S;
+            DeviceTypeEnum = Type.KromekD3SNsdd;
 
             SupportedFileExts = new List<FileExt>() {
-                new FileExt() { FileExtName = "*.n42", FileExtType = FileExt.Type.N42, FileParser = new KromekN42Parser() }
+                new FileExt() { FileExtName = "*.xml", FileExtType = FileExt.Type.N42, FileParser = new KromekN42NsddParser() }
             };
         }
     }
