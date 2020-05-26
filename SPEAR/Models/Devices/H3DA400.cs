@@ -1,20 +1,24 @@
 ﻿using SPEAR.Parsers.Devices;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SPEAR.Models.Devices
 {
-    class BubbleTechFlexSpec : DeviceInfo
+    public class H3DA400 : DeviceInfo
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public BubbleTechFlexSpec()
+        public H3DA400()
         {
             // Set defaults
-            DeviceTypeEnum = Type.KromekD3SDhs;
+            DeviceTypeEnum = Type.H3DA400;
 
             SupportedFileExts = new List<FileExt>() {
-                new FileExt() { FileExtName = "*.2.n42", FileExtType = FileExt.Type.N42, FileParser = new BubbleTechFlexSpecParser() }
+                new FileExt() { FileExtName = "*.n42", FileExtType = FileExt.Type.N42, FileParser = new H3DA400Parser() }
             };
         }
     }

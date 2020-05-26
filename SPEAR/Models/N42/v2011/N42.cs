@@ -6211,6 +6211,8 @@ namespace SPEAR.Models.N42.v2011
 
         /// <remarks/>
         Other,
+
+        Static
     }
 
     /// <remarks/>

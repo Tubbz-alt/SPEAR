@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SPEAR.Models
 {
@@ -24,6 +20,7 @@ namespace SPEAR.Models
             DetectiveX,
             FlirR500,
             FlirR400,
+            H3DA400,
             identiFINDER,
             KromekD3SDhs,
             KromekD3SNsdd,

@@ -60,6 +60,7 @@ namespace SPEAR
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Flir identiFINDER", Tag = new IdentiFINDER() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Flir R400", Tag = new FlirR400() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Flir R500", Tag = new FlirR500() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "H3DA400", Tag = new H3DA400() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Kromek D3S (DHS)", Tag = new KromekD3SDhs() }); 
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Kromek D3S (NSDD)", Tag = new KromekD3SNsdd() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Mirion Spirident Mobile", Tag = new MirionSpirdentMobile() });
