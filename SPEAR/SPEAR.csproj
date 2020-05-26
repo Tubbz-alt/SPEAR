@@ -108,6 +108,10 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\ExtendedLinq.cs" />
     <Compile Include="Models\Devices\ArktisP2000.cs" />
+    <Compile Include="Models\Devices\AtomTexAT6101C.cs" />
+    <Compile Include="Models\Devices\AtomTexAT6103.cs" />
+    <Compile Include="Models\Devices\BubbleTechFlexSpec.cs" />
+    <Compile Include="Models\Devices\KromekD3SNsdd.cs" />
     <Compile Include="Models\Devices\OrtecDetectiveRemote.cs" />
     <Compile Include="Models\Devices\MirionSpiridentMobile.cs" />
     <Compile Include="Models\Devices\NuviaSiris.cs" />
@@ -120,6 +124,10 @@
     <Compile Include="Models\N42\v2011\N42.cs" />
     <Compile Include="Models\Schemas\EventN42Schema.cs" />
     <Compile Include="Parsers\Devices\ArktisP2000N42Parser.cs" />
+    <Compile Include="Parsers\Devices\AtomTexAT6101CSpeParser.cs" />
+    <Compile Include="Parsers\Devices\AtomTexAT6103SpeParser.cs" />
+    <Compile Include="Parsers\Devices\BubbleTechFlexSpecParser.cs" />
+    <Compile Include="Parsers\Devices\KromekN42NsddParser.cs" />
     <Compile Include="Parsers\Devices\OrtecDetectiveRemoteN42Parser.cs" />
     <Compile Include="Parsers\Devices\FlirR400N42Parser.cs" />
     <Compile Include="Parsers\Devices\MirionSpiridentMobileN42Parser.cs" />
@@ -182,7 +190,7 @@
     <Compile Include="Models\Devices\FlirR500.cs" />
     <Compile Include="Models\Devices\IdentiFINDER.cs" />
     <Compile Include="Models\Devices\FlirR400.cs" />
-    <Compile Include="Models\Devices\KromekD3S.cs" />
+    <Compile Include="Models\Devices\KromekD3SDhs.cs" />
     <Compile Include="Models\Devices\RadEyeSPRD.cs" />
     <Compile Include="Models\FileExt.cs" />
     <Compile Include="Models\NuclideID.cs" />
@@ -206,7 +214,7 @@
     <Compile Include="Parsers\Devices\DetectiveXN42Parser.cs" />
     <Compile Include="Parsers\Devices\FlirR500N42Parser.cs" />
     <Compile Include="Parsers\Devices\IdentiFINDERSpeParser.cs" />
-    <Compile Include="Parsers\Devices\KromekN42Parser.cs" />
+    <Compile Include="Parsers\Devices\KromekN42DhsParser.cs" />
     <Compile Include="Parsers\Devices\NucTechN42Parser.cs" />
     <Compile Include="Parsers\Devices\FlirR400SpeParser.cs" />
     <Compile Include="Parsers\Devices\NucTechSpeParser.cs" />

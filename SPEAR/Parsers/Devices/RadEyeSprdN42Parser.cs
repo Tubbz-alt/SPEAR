@@ -97,7 +97,7 @@ namespace SPEAR.Parsers.Devices
                     continue;
 
                 // Create RadSeeker and set FileName
-                deviceData = new DeviceData(DeviceInfo.Type.KromekD3S);
+                deviceData = new DeviceData(DeviceInfo.Type.KromekD3SDhs);
                 deviceData.FileName = fileName;
 
                 // Parse data from N42 object
@@ -232,7 +232,7 @@ namespace SPEAR.Parsers.Devices
                     return false;
 
                 // Get StartTime
-                deviceData.StartDateTime = radMeasurementType.StartDateTime;
+                deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
 
                 // Get MeasureTime
                 string value = radMeasurementType.RealTimeDuration.Remove(0, 2);

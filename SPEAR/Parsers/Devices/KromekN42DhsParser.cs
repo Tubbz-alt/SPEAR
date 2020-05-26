@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 
 namespace SPEAR.Parsers.Devices
 {
-    public class KromekN42Parser : FileParser
+    public class KromekN42DhsParser : FileParser
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Properties
@@ -27,13 +27,13 @@ namespace SPEAR.Parsers.Devices
 
         private IEnumerable<string> filePaths;
 
-        public override string FileName { get { return "Kromek_N42"; } }
+        public override string FileName { get { return "Kromek_N42_DHS"; } }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public KromekN42Parser()
+        public KromekN42DhsParser()
         {
             fileErrors = new List<KeyValuePair<string, string>>();
         }
@@ -97,7 +97,7 @@ namespace SPEAR.Parsers.Devices
                     continue;
 
                 // Create RadSeeker and set FileName
-                deviceData = new DeviceData(DeviceInfo.Type.KromekD3S);
+                deviceData = new DeviceData(DeviceInfo.Type.KromekD3SDhs);
                 deviceData.FileName = fileName;
 
                 // Parse data from N42 object
@@ -228,7 +228,7 @@ namespace SPEAR.Parsers.Devices
                     return false;
 
                 // Get StartTime
-                deviceData.StartDateTime = radMeasurementType.StartDateTime;
+                deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
 
                 // Get MeasureTime
                 string value = radMeasurementType.RealTimeDuration.Remove(0, 2);

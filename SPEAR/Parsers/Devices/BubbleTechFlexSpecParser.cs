@@ -2,7 +2,6 @@
 using SPEAR.Models.N42.v2011;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -13,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace SPEAR.Parsers.Devices
 {
-    public class FlirR400N42Parser : FileParser
+    class BubbleTechFlexSpecParser : FileParser
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Properties
@@ -27,13 +26,13 @@ namespace SPEAR.Parsers.Devices
 
         private IEnumerable<string> filePaths;
 
-        public override string FileName { get { return "FlirR400_N42"; } }
+        public override string FileName { get { return "BubbleTechFlexSpec_N42"; } }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public FlirR400N42Parser()
+        public BubbleTechFlexSpecParser()
         {
             fileErrors = new List<KeyValuePair<string, string>>();
         }
@@ -45,7 +44,7 @@ namespace SPEAR.Parsers.Devices
         /////////////////////////////////////////////////////////////////////////////////////////
         public override IEnumerable<string> GetAllFilePaths(string directoryPath)
         {
-            return Directory.GetFiles(directoryPath, "*.n42");
+            return Directory.GetFiles(directoryPath, "*.2.n42");
         }
 
         public override void InitializeFilePaths(IEnumerable<string> allFilePaths)
@@ -97,7 +96,7 @@ namespace SPEAR.Parsers.Devices
                     continue;
 
                 // Create RadSeeker and set FileName
-                deviceData = new DeviceData(DeviceInfo.Type.FlirR400);
+                deviceData = new DeviceData(DeviceInfo.Type.BubbleTechFlexSpec);
                 deviceData.FileName = fileName;
 
                 // Parse data from N42 object
@@ -224,59 +223,44 @@ namespace SPEAR.Parsers.Devices
                         }
                     }
 
-                    if (analysisFound && radMeasurementFound)
+                    if (analysisFound && analysisFound)
                         break;
                 }
 
-                if (radMeasurementFound == true)
+                if (radMeasurementFound == false || analysisFound == false)
+                    return false;
+
+                // Get StartTime
+                deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
+
+                // Get MeasureTime
+                string value = radMeasurementType.RealTimeDuration.Remove(0, 2);
+                value = value.Remove(value.Length - 1, 1);
+                deviceData.MeasureTime = new TimeSpan(0, 0, (int)Math.Round(double.Parse(value)));
+
+                // Get CountRate
+                var grossCounts = radMeasurementType.GrossCounts.SingleOrDefault(x => x.radDetectorInformationReference == "R6");
+                if (grossCounts != null)
+                    deviceData.CountRate = Convert.ToDouble(grossCounts.CountData);
+                else
                 {
-                    // Get StartTime
-                    deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
-
-                    // Get MeasureTime
-                    var value = radMeasurementType.RealTimeDuration.Remove(0, 2);
-                    var mIndex = value.IndexOf("M");
-                    var sIndex = value.IndexOf("S");
-                    var periodIndex = value.IndexOf(".");
-
-                    if (mIndex != -1 && periodIndex != -1 && sIndex != -1)
-                    {
-                        deviceData.MeasureTime = new TimeSpan(0, 0,
-                            int.Parse(value.Substring(0, mIndex)),
-                            int.Parse(value.Substring(mIndex + 1, periodIndex - mIndex - 1)),
-                            int.Parse(value.Substring(periodIndex + 1, 3)));
-                    }
-                    else if (mIndex != -1 && sIndex != -1)
-                        deviceData.MeasureTime = new TimeSpan(0,
-                            int.Parse(value.Substring(0, mIndex)),
-                            int.Parse(value.Substring(mIndex + 1, sIndex - mIndex - 1)));
-                    else if (mIndex != -1)
-                        deviceData.MeasureTime = new TimeSpan(0, int.Parse(value.Substring(0, mIndex)), 0);
-                    else if (sIndex != -1)
-                        deviceData.MeasureTime = new TimeSpan(0, 0, int.Parse(value.Substring(0, sIndex)));
-
-                    // Get CountRate
-                    int sum = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text
+                    var sum = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text
                         .Split(Globals.Delim_Space, StringSplitOptions.RemoveEmptyEntries)
-                        .Sum(c => int.Parse(c));
+                        .Sum(c => Convert.ToDouble(value));
                     deviceData.CountRate = sum / deviceData.MeasureTime.TotalSeconds;
-                
-            }
+                }
 
-                // Get Nuclides
-                if (analysisFound == true)
+                // Get Identified Nuclides
+                var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
+                for (int i = 0; i < nuclides.Count(); i += 1)
                 {
-                    var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
-                    for (int i = 0; i < nuclides.Count(); i += 1)
+                    var elementNames = nuclides[i].ItemsElementName;
+                    for (int c = 0; c < elementNames.Length; c += 1)
                     {
-                        var elementNames = nuclides[i].ItemsElementName;
-                        for (int c = 0; c < elementNames.Length; c += 1)
+                        if (elementNames[c] == ItemsChoiceType.NuclideIDConfidenceValue)
                         {
-                            if (elementNames[c] == ItemsChoiceType.NuclideIDConfidenceValue)
-                            {
-                                deviceData.Nuclides[i] = new NuclideID(nuclides[i].NuclideName, Convert.ToDouble(nuclides[i].Items[c]));
-                                break;
-                            }
+                            deviceData.Nuclides[i] = new NuclideID(nuclides[i].NuclideName.Replace('_', '-'), (double)nuclides[i].Items[c]);
+                            break;
                         }
                     }
                 }
