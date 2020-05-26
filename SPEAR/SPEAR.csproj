@@ -111,6 +111,7 @@
     <Compile Include="Models\Devices\AtomTexAT6101C.cs" />
     <Compile Include="Models\Devices\AtomTexAT6103.cs" />
     <Compile Include="Models\Devices\BubbleTechFlexSpec.cs" />
+    <Compile Include="Models\Devices\H3DA400.cs" />
     <Compile Include="Models\Devices\KromekD3SNsdd.cs" />
     <Compile Include="Models\Devices\OrtecDetectiveRemote.cs" />
     <Compile Include="Models\Devices\MirionSpiridentMobile.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Parsers\Devices\AtomTexAT6101CSpeParser.cs" />
     <Compile Include="Parsers\Devices\AtomTexAT6103SpeParser.cs" />
     <Compile Include="Parsers\Devices\BubbleTechFlexSpecParser.cs" />
+    <Compile Include="Parsers\Devices\H3DA400Parser.cs" />
     <Compile Include="Parsers\Devices\KromekN42NsddParser.cs" />
     <Compile Include="Parsers\Devices\OrtecDetectiveRemoteN42Parser.cs" />
     <Compile Include="Parsers\Devices\FlirR400N42Parser.cs" />
