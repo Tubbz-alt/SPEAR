@@ -18,7 +18,7 @@ namespace SPEAR.Models.Devices
             DeviceTypeEnum = Type.H3DA400;
 
             SupportedFileExts = new List<FileExt>() {
-                new FileExt() { FileExtName = "*.n42", FileExtType = FileExt.Type.N42, FileParser = new H3DA400Parser() }
+                new FileExt() { FileExtName = "*.n42", FileExtType = FileExt.Type.N42, FileParser = new H3DA400N42Parser() }
             };
         }
     }

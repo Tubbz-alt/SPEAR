@@ -1,20 +1,24 @@
-﻿using SPEAR.Parsers.Devices;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SPEAR.Parsers.Devices;
 
 namespace SPEAR.Models.Devices
 {
-    class BubbleTechFlexSpec : DeviceInfo
+    public class NucSafeGuardian : DeviceInfo
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public BubbleTechFlexSpec()
+        public NucSafeGuardian()
         {
             // Set defaults
-            DeviceTypeEnum = Type.KromekD3SDhs;
+            DeviceTypeEnum = Type.OrtecDetectiveRemote;
 
             SupportedFileExts = new List<FileExt>() {
-                new FileExt() { FileExtName = "*.2.n42", FileExtType = FileExt.Type.N42, FileParser = new BubbleTechFlexSpecN42Parser() }
+                new FileExt() { FileExtName = "*.n42", FileExtType = FileExt.Type.N42, FileParser = new NucSafeGuardianN42Parser() }
             };
         }
     }

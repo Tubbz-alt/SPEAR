@@ -113,6 +113,7 @@
     <Compile Include="Models\Devices\BubbleTechFlexSpec.cs" />
     <Compile Include="Models\Devices\H3DA400.cs" />
     <Compile Include="Models\Devices\KromekD3SNsdd.cs" />
+    <Compile Include="Models\Devices\NucSafeGuardian.cs" />
     <Compile Include="Models\Devices\OrtecDetectiveRemote.cs" />
     <Compile Include="Models\Devices\MirionSpiridentMobile.cs" />
     <Compile Include="Models\Devices\NuviaSiris.cs" />
@@ -127,9 +128,10 @@
     <Compile Include="Parsers\Devices\ArktisP2000N42Parser.cs" />
     <Compile Include="Parsers\Devices\AtomTexAT6101CSpeParser.cs" />
     <Compile Include="Parsers\Devices\AtomTexAT6103SpeParser.cs" />
-    <Compile Include="Parsers\Devices\BubbleTechFlexSpecParser.cs" />
-    <Compile Include="Parsers\Devices\H3DA400Parser.cs" />
+    <Compile Include="Parsers\Devices\BubbleTechFlexSpecN42Parser.cs" />
+    <Compile Include="Parsers\Devices\H3DA400N42Parser.cs" />
     <Compile Include="Parsers\Devices\KromekN42NsddParser.cs" />
+    <Compile Include="Parsers\Devices\NucSafeGuardianN42Parser.cs" />
     <Compile Include="Parsers\Devices\OrtecDetectiveRemoteN42Parser.cs" />
     <Compile Include="Parsers\Devices\FlirR400N42Parser.cs" />
     <Compile Include="Parsers\Devices\MirionSpiridentMobileN42Parser.cs" />
@@ -206,7 +208,6 @@
     <Compile Include="Models\Schemas\RadSeekerN42Schema.cs" />
     <Compile Include="Models\Schemas\AtomTexSchema.cs" />
     <Compile Include="Models\Devices\Verifinder.cs" />
-    <Compile Include="Models\Schemas\N42InstrumentSchema.cs" />
     <Compile Include="Models\Schemas\VerifinderN42Schema.cs" />
     <Compile Include="Parsers\Devices\AISenseIDParser.cs" />
     <Compile Include="Parsers\Devices\AtomTexN42Parser.cs" />

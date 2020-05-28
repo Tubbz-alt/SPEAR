@@ -26,6 +26,7 @@ namespace SPEAR.Models
             KromekD3SNsdd,
             MirionSpiridentMobile,
             MirionSpirPack,
+            NucSafeGuardian,
             NucTech,
             NuviaRadScout,
             NuviaSiris,
