@@ -65,6 +65,7 @@ namespace SPEAR
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Kromek D3S (NSDD)", Tag = new KromekD3SNsdd() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Mirion Spirident Mobile", Tag = new MirionSpirdentMobile() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Mirion SpirPack", Tag = new MirionSpirPack() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "NucSafe Guardian", Tag = new NucSafeGuardian() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "NucTech", Tag = new NucTech() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Nuvia RadScout", Tag = new NuviaRadScout() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Nuvia Siris", Tag = new NuviaSiris() });

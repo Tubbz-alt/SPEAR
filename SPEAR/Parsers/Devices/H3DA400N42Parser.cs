@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace SPEAR.Parsers.Devices
 {
-    class BubbleTechFlexSpecParser : FileParser
+    public class H3DA400N42Parser : FileParser
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Properties
@@ -26,13 +26,13 @@ namespace SPEAR.Parsers.Devices
 
         private IEnumerable<string> filePaths;
 
-        public override string FileName { get { return "BubbleTechFlexSpec_N42"; } }
+        public override string FileName { get { return "H3DA400_N42"; } }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public BubbleTechFlexSpecParser()
+        public H3DA400N42Parser()
         {
             fileErrors = new List<KeyValuePair<string, string>>();
         }
@@ -44,7 +44,7 @@ namespace SPEAR.Parsers.Devices
         /////////////////////////////////////////////////////////////////////////////////////////
         public override IEnumerable<string> GetAllFilePaths(string directoryPath)
         {
-            return Directory.GetFiles(directoryPath, "*.2.n42");
+            return Directory.GetFiles(directoryPath, "*.n42");
         }
 
         public override void InitializeFilePaths(IEnumerable<string> allFilePaths)
@@ -239,16 +239,10 @@ namespace SPEAR.Parsers.Devices
                 deviceData.MeasureTime = new TimeSpan(0, 0, (int)Math.Round(double.Parse(value)));
 
                 // Get CountRate
-                var grossCounts = radMeasurementType.GrossCounts.SingleOrDefault(x => x.radDetectorInformationReference == "R6");
-                if (grossCounts != null)
-                    deviceData.CountRate = Convert.ToDouble(grossCounts.CountData);
-                else
-                {
-                    var sum = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text
-                        .Split(Globals.Delim_Space, StringSplitOptions.RemoveEmptyEntries)
-                        .Sum(c => Convert.ToDouble(value));
-                    deviceData.CountRate = sum / deviceData.MeasureTime.TotalSeconds;
-                }
+                var sum = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text
+                    .Split(Globals.Delim_Space, StringSplitOptions.RemoveEmptyEntries)
+                    .Sum(c => Convert.ToDouble(value));
+                deviceData.CountRate = sum / deviceData.MeasureTime.TotalSeconds;
 
                 // Get Identified Nuclides
                 var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
@@ -283,9 +277,10 @@ namespace SPEAR.Parsers.Devices
                 serializer.UnknownElement += new XmlElementEventHandler(Serializer_UnknownElement);
                 serializer.UnknownAttribute += new XmlAttributeEventHandler(Serializer_UnknownAttribute);
 
-                using (TextReader stream = File.OpenText(filePath))
+                var sanitizedFileText = RemoveXmlNameSpaces(filePath);
+                using (TextReader reader = new StringReader(sanitizedFileText))
                 {
-                    radInstrumentDataType = serializer.Deserialize(stream) as RadInstrumentDataType;
+                    radInstrumentDataType = serializer.Deserialize(reader) as RadInstrumentDataType;
                 }
             }
             catch (Exception ex)
@@ -299,6 +294,20 @@ namespace SPEAR.Parsers.Devices
                 return false;
 
             return true;
+        }
+
+        private string RemoveXmlNameSpaces(string filePath)
+        {
+            var sanitizedFileText = string.Empty;
+            using (TextReader reader = File.OpenText(filePath))
+            {
+                sanitizedFileText = reader.ReadToEnd()
+                    .Split(Globals.Delim_Newline, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(line => line.TrimStart())
+                    .Where(line => !(line.StartsWith("<H3D:")))
+                    .Aggregate((combined, next) => combined + next);
+            }
+            return sanitizedFileText;
         }
 
         private void Serializer_UnknownElement(object sender, XmlElementEventArgs e)
