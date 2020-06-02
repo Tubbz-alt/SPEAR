@@ -32,6 +32,7 @@ namespace SPEAR.Models
             NuviaSiris,
             OrtecDetectiveRemote,
             Polimaster,
+            PsiPerm,
             RadEagle,
             RadEyeSPRD,
             RadSeeker,

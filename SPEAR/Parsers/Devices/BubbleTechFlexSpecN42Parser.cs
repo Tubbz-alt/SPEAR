@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace SPEAR.Parsers.Devices
 {
-    class BubbleTechFlexSpecN42Parser : FileParser
+    public class BubbleTechFlexSpecN42Parser : FileParser
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Properties
@@ -246,7 +246,7 @@ namespace SPEAR.Parsers.Devices
                 {
                     var sum = radMeasurementType.Spectrum.FirstOrDefault().ChannelData.Text
                         .Split(Globals.Delim_Space, StringSplitOptions.RemoveEmptyEntries)
-                        .Sum(c => Convert.ToDouble(value));
+                        .Sum(c => Convert.ToDouble(c));
                     deviceData.CountRate = sum / deviceData.MeasureTime.TotalSeconds;
                 }
 
