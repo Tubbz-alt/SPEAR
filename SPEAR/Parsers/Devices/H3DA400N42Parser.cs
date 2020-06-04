@@ -96,7 +96,7 @@ namespace SPEAR.Parsers.Devices
                     continue;
 
                 // Create RadSeeker and set FileName
-                deviceData = new DeviceData(DeviceInfo.Type.BubbleTechFlexSpec);
+                deviceData = new DeviceData(DeviceInfo.Type.H3DA400);
                 deviceData.FileName = fileName;
 
                 // Parse data from N42 object

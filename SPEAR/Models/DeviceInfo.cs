@@ -20,6 +20,7 @@ namespace SPEAR.Models
             DetectiveX,
             FlirR500,
             FlirR400,
+            RadEyeSprdGn,
             H3DA400,
             identiFINDER,
             KromekD3SDhs,
