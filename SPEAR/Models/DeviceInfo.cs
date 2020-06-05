@@ -37,6 +37,7 @@ namespace SPEAR.Models
             RadEagle,
             RadEyeSPRD,
             RadSeeker,
+            RapiscanMp100Gns,
             RIIDEyeX,
             Rs700,
             RSI,

@@ -3,12 +3,12 @@ using SPEAR.Parsers.Devices;
 
 namespace SPEAR.Models.Devices
 {
-    public class RadEyeSPRD : DeviceInfo
+    public class RadEyeSprd : DeviceInfo
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public RadEyeSPRD()
+        public RadEyeSprd()
         {
             // Set defaults
             DeviceTypeEnum = Type.RadEyeSPRD;

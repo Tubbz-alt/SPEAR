@@ -120,6 +120,7 @@
     <Compile Include="Models\Devices\NuviaRadScout.cs" />
     <Compile Include="Models\Devices\PsiPerm.cs" />
     <Compile Include="Models\Devices\RadEyeSprdGn.cs" />
+    <Compile Include="Models\Devices\RapiscanMp100Gns.cs" />
     <Compile Include="Models\Devices\Rs700.cs" />
     <Compile Include="Models\Devices\SymetricaSN33N.cs" />
     <Compile Include="Models\Devices\SymetricaDiscoverMobile.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Parsers\Devices\NuviaRadScoutN42Parser.cs" />
     <Compile Include="Parsers\Devices\PsiPermN42Parser.cs" />
     <Compile Include="Parsers\Devices\RadEyeSprdGnN42Parser.cs" />
+    <Compile Include="Parsers\Devices\RapiscanMp100GnsN42Parser.cs" />
     <Compile Include="Parsers\Devices\Rs700N42Parser.cs" />
     <Compile Include="Parsers\Devices\SymetricaSN33NN42Parser.cs" />
     <Compile Include="Parsers\Devices\SymetricaDiscoverMobileN42Parser.cs" />
@@ -199,7 +201,7 @@
     <Compile Include="Models\Devices\IdentiFINDER.cs" />
     <Compile Include="Models\Devices\FlirR400.cs" />
     <Compile Include="Models\Devices\KromekD3SDhs.cs" />
-    <Compile Include="Models\Devices\RadEyeSPRD.cs" />
+    <Compile Include="Models\Devices\RadEyeSprd.cs" />
     <Compile Include="Models\FileExt.cs" />
     <Compile Include="Models\NuclideID.cs" />
     <Compile Include="Models\Devices\NucTech.cs" />

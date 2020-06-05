@@ -74,7 +74,7 @@ namespace SPEAR
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Polimaster", Tag = new Polimaster() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "PSI PERM", Tag = new PsiPerm() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RadEagle", Tag = new RadEagle() });
-            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RadEye SPRD", Tag = new RadEyeSPRD() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RadEye SPRD", Tag = new RadEyeSprd() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RadSeeker", Tag = new RadSeeker() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RIID Eye X", Tag = new RIIDEyeX() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RS 700", Tag = new Rs700() });
