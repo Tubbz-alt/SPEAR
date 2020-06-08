@@ -1,6 +1,5 @@
-﻿
-using SPEAR.Models;
-using SPEAR.Models.N42.v2006;
+﻿using SPEAR.Models;
+using SPEAR.Models.N42.v2011;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,14 +7,12 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace SPEAR.Parsers.Devices
 {
-    public class NucSafeGuardianN42Parser : FileParser
+    public class ThermoRadHaloN42Parser : FileParser
     {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Properties
@@ -23,20 +20,19 @@ namespace SPEAR.Parsers.Devices
         public bool ErrorsOccurred;
         private List<KeyValuePair<string, string>> fileErrors;
 
-        private N42InstrumentData n42InstrumentData;
+        private RadInstrumentDataType radInstrumentDataType;
         private DeviceData deviceData;
         private List<DeviceData> deviceDatasParsed;
 
         private IEnumerable<string> filePaths;
 
-
-        public override string FileName { get { return "NucSafeGuardian_N42"; } }
+        public override string FileName { get { return "ThermoRadHalo_N42"; } }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////
         // Constructor
         /////////////////////////////////////////////////////////////////////////////////////////
-        public NucSafeGuardianN42Parser()
+        public ThermoRadHaloN42Parser()
         {
             fileErrors = new List<KeyValuePair<string, string>>();
         }
@@ -67,7 +63,7 @@ namespace SPEAR.Parsers.Devices
         public override void Cleanup()
         {
             deviceDatasParsed = new List<DeviceData>();
-            n42InstrumentData = null;
+            radInstrumentDataType = null;
         }
 
 
@@ -83,7 +79,7 @@ namespace SPEAR.Parsers.Devices
             Thread thread = new Thread(threadStart);
             thread.Start();
 
-            // Parse n42 files
+            // Parse spe files
             int filesCompleted = 0;
             foreach (string filePath in filePaths)
             {
@@ -99,12 +95,12 @@ namespace SPEAR.Parsers.Devices
                 if (DeserializeN42(filePath) == false)
                     continue;
 
-                // Create OrtecDetg and set FileName
-                deviceData = new DeviceData(DeviceInfo.Type.NucSafeGuardian);
+                // Create RadSeeker and set FileName
+                deviceData = new DeviceData(DeviceInfo.Type.ThermoRadHalo);
                 deviceData.FileName = fileName;
 
                 // Parse data from N42 object
-                if (ParseN42File(filePath) == false)
+                if (ParseN42File() == false)
                     continue;
 
                 // Add to other parsed
@@ -141,7 +137,7 @@ namespace SPEAR.Parsers.Devices
 
         private void Clear()
         {
-            n42InstrumentData = null;
+            radInstrumentDataType = null;
             deviceData = null;
         }
 
@@ -181,146 +177,87 @@ namespace SPEAR.Parsers.Devices
             Directory.Delete(MainWindow.ArchiveName, true);
         }
 
-        private bool ParseN42File(string filePath)
+        private bool ParseN42File()
         {
-            if (n42InstrumentData == null || deviceData == null)
+            if (radInstrumentDataType == null || deviceData == null)
                 return false;
 
             try
             {
-                Measurement measurement = n42InstrumentData.Measurement.FirstOrDefault();
-                if (measurement == null)
+                var radInstrumentInformationType = radInstrumentDataType.RadInstrumentInformation;
+                if (radInstrumentInformationType == null)
                     return false;
 
-                var element = measurement.Any.Where(x => x.Name == "InstrumentInformation").FirstOrDefault();
-                if (element == null)
+                // Get DeviceType
+                deviceData.DeviceType = radInstrumentInformationType.RadInstrumentManufacturerName + " " + radInstrumentInformationType.RadInstrumentModelName;
+
+                // Get SerialNumber
+                deviceData.SerialNumber = radInstrumentInformationType.RadInstrumentIdentifier;
+
+                // Get needed nodes AnalysisResultsType and RadMeasurementType
+                var itemsElementNames = radInstrumentDataType.ItemsElementName;
+                if (itemsElementNames == null)
                     return false;
-                string deviceType = "";
-                foreach (XmlNode node in element.ChildNodes)
+                AnalysisResultsType analysisResultsType = null;
+                RadMeasurementType radMeasurementType = null;
+                bool analysisFound = false, radMeasurementFound = false;
+                for (int i = 0; i < itemsElementNames.Count(); i += 1)
                 {
-                    // Get DeviceType
-                    if (node.Name.EndsWith("Manufacturer"))
-                        deviceType = node.InnerText + " ";
-                    else if (node.Name.EndsWith("Model"))
-                        deviceType += node.InnerText;
-                    // Get SerialNumber
-                    else if (node.Name.EndsWith("ID"))
-                        deviceData.SerialNumber = node.InnerText.Split(' ').LastOrDefault();
-                }
-                deviceData.DeviceType = deviceType;
-
-                // Get Count rate
-                element = measurement.Any
-                    .Where(x => x.Name == "CountDoseData")
-                    .FirstOrDefault(x => {
-                        foreach (XmlAttribute attribute in x.Attributes)
-                            if (attribute.Name == "DetectorType" && attribute.Value == "Gamma")
-                                return true;
-                        return false;
-                    });
-                foreach (XmlNode node in element.ChildNodes)
-                {
-                    if (node.Name == "CountRate")
+                    if (analysisFound == false)
                     {
-                        deviceData.CountRate = double.Parse(node.InnerText);
-                        break;
-                    }
-                }
-
-                // Get StartDateTime and MeasureTime
-                element = measurement.Any
-                    .Where(x => x.Name == "Spectrum")
-                    .FirstOrDefault(x => {
-                        foreach (XmlNode node in x.ChildNodes)
-                            if (node.Name == "SourceType" && node.InnerText == "Item")
-                                return true;
-                        return false;
-                    });
-                if (element == null)
-                    return false;
-                var foundStartTime = false;
-                var foundMeasureTime = false;
-                foreach (XmlNode node in element.ChildNodes)
-                {
-                    // Get StartDateTime
-                    if (!foundStartTime && node.Name == "StartTime")
-                    {
-                        var attribute = node.InnerText;
-                        if (DateTime.TryParse(attribute, out DateTime date))
-                            deviceData.StartDateTime = date;
-                        foundStartTime = true;
+                        if (itemsElementNames[i] == ItemsChoiceType2.AnalysisResults)
+                        {
+                            analysisResultsType = radInstrumentDataType.Items[i] as AnalysisResultsType;
+                            analysisFound = true;
+                        }
                     }
 
-                    // Get MeaureTime
-                    if (!foundMeasureTime && node.Name.EndsWith("RealTime"))
+                    if (radMeasurementFound == false)
                     {
-                        string time = node.InnerText.Remove(0, 2);
-                        var mIndex = time.IndexOf("M");
-                        var sIndex = time.IndexOf("S");
-                        var periodIndex = time.IndexOf(".");
-                        if (mIndex != -1 && periodIndex != -1 && sIndex != -1)
+                        if (itemsElementNames[i] == ItemsChoiceType2.RadMeasurement)
                         {
-                            deviceData.MeasureTime = deviceData.MeasureTime.Add(new TimeSpan(0, 0,
-                                int.Parse(time.Substring(0, mIndex)),
-                                int.Parse(time.Substring(mIndex + 1, periodIndex - mIndex - 1)),
-                                int.Parse(time.Substring(periodIndex + 1, sIndex - periodIndex - 1))));
+                            radMeasurementType = radInstrumentDataType.Items[i] as RadMeasurementType;
+                            // Check if correct node
+                            if (radMeasurementType.MeasurementClassCode == MeasurementClassCodeSimpleType.Foreground)
+                                radMeasurementFound = true;
                         }
-                        else if (mIndex != -1 && sIndex != -1)
-                        {
-                            deviceData.MeasureTime = deviceData.MeasureTime.Add(new TimeSpan(0,
-                                int.Parse(time.Substring(0, mIndex)),
-                                int.Parse(time.Substring(mIndex + 1, sIndex - mIndex - 1))));
-                        }
-                        else if (mIndex != -1)
-                        {
-                            deviceData.MeasureTime = deviceData.MeasureTime.Add(new TimeSpan(0, int.Parse(time.Substring(0, mIndex)), 0));
-                        }
-                        else if (periodIndex != -1 && sIndex != -1)
-                        {
-                            deviceData.MeasureTime = deviceData.MeasureTime.Add(new TimeSpan(0, 0, 0,
-                                int.Parse(time.Substring(0, periodIndex)),
-                                int.Parse(time.Substring(periodIndex + 1, periodIndex + 6))));
-                        }
-                        else if (sIndex != -1)
-                        {
-                            deviceData.MeasureTime = deviceData.MeasureTime.Add(new TimeSpan(0, 0, int.Parse(time.Substring(0, sIndex))));
-                        }
-                        foundMeasureTime = true;
                     }
-                    if (foundStartTime && foundMeasureTime)
+
+                    if (analysisFound && analysisFound)
                         break;
                 }
+
+                if (radMeasurementFound == false || analysisFound == false)
+                    return false;
+
+                // Get StartTime
+                deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
+
+                // Get MeasureTime
+                string value = radMeasurementType.RealTimeDuration.Remove(0, 2);
+                value = value.Remove(value.Length - 1, 1);
+                deviceData.MeasureTime = new TimeSpan(0, 0, (int)Math.Round(double.Parse(value)));
+
+                // Get CountRate
+                var grossCounts = radMeasurementType.GrossCounts.SingleOrDefault(x => x.id == "ForegroundMeasurement-MCA-GrossCounts");
+                if (grossCounts == null)
+                    return false;
+                deviceData.CountRate = Convert.ToDouble(grossCounts.CountData);
 
                 // Get Identified Nuclides
-                element = measurement.Any
-                    .Where(x => x.Name == "AnalysisResults")
-                    .FirstOrDefault();
-                var nuclideIndex = 0;
-                foreach (XmlNode nuclideNode in element.FirstChild.ChildNodes)
+                var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
+                for (int i = 0; i < nuclides.Count(); i += 1)
                 {
-                    var foundConfidence = false;
-                    var foundNuclideName = false;
-                    var name = string.Empty;
-                    var confidence = 0.0;
-                    foreach (XmlNode nuclideChildNode in nuclideNode.ChildNodes)
+                    var elementNames = nuclides[i].ItemsElementName;
+                    for (int c = 0; c < elementNames.Length; c += 1)
                     {
-                        if (!foundNuclideName && nuclideChildNode.Name == "NuclideName")
+                        if (elementNames[c] == ItemsChoiceType.NuclideIDConfidenceValue)
                         {
-                            name = nuclideChildNode.InnerText;
-                            foundNuclideName = true;
-                        }
-                        if (!foundConfidence && nuclideChildNode.Name == "NuclideIDConfidenceIndication")
-                        {
-                            confidence = double.Parse(nuclideChildNode.InnerText);
-                            foundConfidence = true;
-                        }
-                        if (foundConfidence && foundNuclideName)
+                            deviceData.Nuclides[i] = new NuclideID(nuclides[i].NuclideName.Replace('_', '-'), (double)nuclides[i].Items[c]);
                             break;
+                        }
                     }
-                    deviceData.Nuclides[nuclideIndex] = new NuclideID(name, confidence);
-                    nuclideIndex += 1;
                 }
-
             }
             catch (Exception ex)
             {
@@ -336,14 +273,14 @@ namespace SPEAR.Parsers.Devices
             XmlSerializer serializer;
             try
             {
-                serializer = new XmlSerializer(typeof(N42InstrumentData));
+                serializer = new XmlSerializer(typeof(RadInstrumentDataType));
                 serializer.UnknownElement += new XmlElementEventHandler(Serializer_UnknownElement);
                 serializer.UnknownAttribute += new XmlAttributeEventHandler(Serializer_UnknownAttribute);
 
-                var sanitizedFileText = RemoveXmlNameSpaces(filePath, "Nucsafe");
+                var sanitizedFileText = RemoveXmlNameSpaces(filePath, "TFS");
                 using (TextReader reader = new StringReader(sanitizedFileText))
                 {
-                    n42InstrumentData = serializer.Deserialize(reader) as N42InstrumentData;
+                    radInstrumentDataType = serializer.Deserialize(reader) as RadInstrumentDataType;
                 }
             }
             catch (Exception ex)
@@ -353,32 +290,39 @@ namespace SPEAR.Parsers.Devices
                 return false;
             }
 
-            if (n42InstrumentData == null)
+            if (radInstrumentDataType == null)
                 return false;
 
             return true;
         }
 
-        private string RemoveXmlNameSpaces(string filePath, string namespaceTag)
+        private string RemoveXmlNameSpaces(string filePath, string ns)
         {
             var sanitizedFileText = string.Empty;
+            
             using (TextReader reader = File.OpenText(filePath))
             {
-                var split = reader.ReadToEnd()
-                    .Split(Globals.Delim_Newline, StringSplitOptions.RemoveEmptyEntries);
-                sanitizedFileText = split
-                    .Select(line => line.TrimStart())
-                    .Where(line => !line.StartsWith($"<{namespaceTag}:") && !line.StartsWith($"</{namespaceTag}:"))
-                    .Select(line => {
-                        if (line.StartsWith("<Measurement"))
-                            line = line.Remove(line.IndexOf("Nucsafe:")) + ">";
-                        else if (line.StartsWith("<N42InstrumentData"))
-                            line = line.Remove(line.IndexOf("xmlns:")) + ">";
-                        return line;
-                    })
-                    .Aggregate((combined, next) => combined + next);
+                var splitFile = reader.ReadToEnd()
+                    .Split(Globals.Delim_Newline, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(line => line.TrimStart());
+
+                // Remove xmlns attributes
+                // Also remove invalid attribute
+                splitFile = splitFile.Select(line => {
+                    if (line.StartsWith("<?xml"))
+                        line = line.Remove(line.IndexOf("<?xml-model"));
+                    else if (line.StartsWith("<RadInstrumentData"))
+                        line = line.Remove(line.IndexOf("xmlns:xsi")) + ">";
+                    else if (line.Contains("__FALLBACK_"))
+                        line = line.Replace("__FALLBACK_TELEMETRY__", "true");
+                    return line;
+                });
+
+                // Remove namespaced elements
+                splitFile = splitFile.Where(line => !(line.StartsWith($"<{ns}:")));
+
+                return splitFile.Aggregate((combined, next) => combined + next);
             }
-            return sanitizedFileText;
         }
 
         private void Serializer_UnknownElement(object sender, XmlElementEventArgs e)

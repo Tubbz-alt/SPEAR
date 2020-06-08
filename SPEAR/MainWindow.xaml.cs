@@ -81,6 +81,7 @@ namespace SPEAR
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "RSI SR-10", Tag = new RSI() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Symetrica Discover Mobile", Tag = new SymetricaDiscoverMobile() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Symetrica SN33-N", Tag = new SymetricaSN33N() });
+            ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Thermo RadHalo", Tag = new ThermoRadHalo() });
             ComboBox_DetectorType.Items.Add(new ComboBoxItem() { Content = "Verifinder", Tag = new Verifinder() });
 
             ComboBox_FileType.Visibility = Visibility.Collapsed;

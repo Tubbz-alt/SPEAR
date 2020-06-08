@@ -42,6 +42,7 @@ namespace SPEAR.Models
             RSI,
             SymetricaDiscoverMobile,
             SymetricaSN33N,
+            ThermoRadHalo,
             Verifinder,
         }
 

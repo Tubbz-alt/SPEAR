@@ -124,6 +124,7 @@
     <Compile Include="Models\Devices\SymetricaSN33N.cs" />
     <Compile Include="Models\Devices\SymetricaDiscoverMobile.cs" />
     <Compile Include="Models\Devices\MirionSpirPack.cs" />
+    <Compile Include="Models\Devices\ThermoRadHalo.cs" />
     <Compile Include="Models\N42\v2006\N42.cs" />
     <Compile Include="Models\N42\v2011\N42.cs" />
     <Compile Include="Models\Schemas\EventN42Schema.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Parsers\Devices\SymetricaDiscoverMobileN42Parser.cs" />
     <Compile Include="Parsers\Devices\MirionSpirPackN42Parser.cs" />
     <Compile Include="Parsers\Devices\RadSeeker01N42Parser.cs" />
+    <Compile Include="Parsers\Devices\ThermoRadHaloN42Parser.cs" />
     <Compile Include="Views\LoadingSpinner.xaml.cs">
       <DependentUpon>LoadingSpinner.xaml</DependentUpon>
     </Compile>
