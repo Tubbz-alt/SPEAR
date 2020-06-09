@@ -38,6 +38,7 @@ namespace SPEAR.Models
             RadEyeSPRD,
             RadSeeker,
             RIIDEyeX,
+            Rs350,
             Rs700,
             RSI,
             SymetricaDiscoverMobile,
