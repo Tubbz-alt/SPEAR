@@ -25,9 +25,9 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CharacterizationN42Parser\SPEAR.csproj">
+    <ProjectReference Include="..\SPEAR\SPEAR.csproj">
       <Name>SPEAR</Name>
-      <Project>{E650044B-67A5-449B-9E24-687D7A94DFE3}</Project>
+      <Project>{e650044b-67a5-449b-9e24-687d7a94dfe3}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
