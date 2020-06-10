@@ -44,7 +44,7 @@ namespace SPEAR.Parsers.Devices
         /////////////////////////////////////////////////////////////////////////////////////////
         public override IEnumerable<string> GetAllFilePaths(string directoryPath)
         {
-            return Directory.GetFiles(directoryPath, "*.n42");
+            return Directory.GetFiles(directoryPath, "*.n42", SearchOption.AllDirectories);
         }
 
         public override void InitializeFilePaths(IEnumerable<string> allFilePaths)
