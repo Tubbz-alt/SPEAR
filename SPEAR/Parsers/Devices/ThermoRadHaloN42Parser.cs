@@ -246,6 +246,8 @@ namespace SPEAR.Parsers.Devices
 
                 // Get Identified Nuclides
                 var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
+                if (nuclides == null)
+                    return true;
                 for (int i = 0; i < nuclides.Count(); i += 1)
                 {
                     var elementNames = nuclides[i].ItemsElementName;
@@ -304,25 +306,30 @@ namespace SPEAR.Parsers.Devices
             {
                 var splitFile = reader.ReadToEnd()
                     .Split(Globals.Delim_Newline, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(line => line.TrimStart());
+                    .Select(x => x.TrimStart())
+                    .ToList();
 
                 // Remove xmlns attributes
                 // Also remove invalid attribute
-                splitFile = splitFile.Select(line => {
-                    if (line.StartsWith("<?xml"))
-                        line = line.Remove(line.IndexOf("<?xml-model"));
-                    else if (line.StartsWith("<RadInstrumentData"))
-                        line = line.Remove(line.IndexOf("xmlns:xsi")) + ">";
-                    else if (line.Contains("__FALLBACK_"))
-                        line = line.Replace("__FALLBACK_TELEMETRY__", "true");
-                    return line;
-                });
+                splitFile = splitFile.Select(line => SteralizeLine(line))
+                .ToList();
 
                 // Remove namespaced elements
-                splitFile = splitFile.Where(line => !(line.StartsWith($"<{ns}:")));
+                splitFile = splitFile.Where(line => !(line.StartsWith($"<{ns}:"))).ToList();
 
                 return splitFile.Aggregate((combined, next) => combined + next);
             }
+        }
+
+        private static string SteralizeLine(string line)
+        {
+            if (line.StartsWith("<?xml-model"))
+                line = line.Remove(line.IndexOf("<?xml-model"));
+            else if (line.StartsWith("<RadInstrumentData"))
+                line = line.Remove(line.IndexOf("xmlns:xsi")) + ">";
+            else if (line.Contains("__FALLBACK_"))
+                line = line.Replace("__FALLBACK_TELEMETRY__", "true");
+            return line;
         }
 
         private void Serializer_UnknownElement(object sender, XmlElementEventArgs e)
