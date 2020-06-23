@@ -72,7 +72,7 @@ namespace SPEAR.Parsers.Devices
         /////////////////////////////////////////////////////////////////////////////////////////
         private void ParseFiles()
         {
-            SortedList<DateTime, DeviceData> sortedDeviceDatas = new SortedList<DateTime, DeviceData>();
+            SortedList<DateTime, List<DeviceData>> sortedDeviceDatas = new SortedList<DateTime, List<DeviceData>>();
 
             // Start Thread that archives .N42 files
             ThreadStart threadStart = new ThreadStart(ArchiveFiles);
@@ -103,16 +103,22 @@ namespace SPEAR.Parsers.Devices
                 if (ParseN42File() == false)
                     continue;
 
-                // Add to other parsed
+                // This device has start times that are identical
                 if (sortedDeviceDatas.ContainsKey(deviceData.StartDateTime))
-                    continue;
-                sortedDeviceDatas.Add(deviceData.StartDateTime, deviceData);
+                    sortedDeviceDatas[deviceData.StartDateTime].Add(deviceData);
+                else
+                    sortedDeviceDatas.Add(deviceData.StartDateTime, new List<DeviceData> { deviceData });
             }
 
             // Number all the events
-            int trailNumber = 1;
-            foreach (KeyValuePair<DateTime, DeviceData> device in sortedDeviceDatas)
-                device.Value.TrialNumber = trailNumber++;
+            var trailNumber = 1;
+            foreach (var deviceList in sortedDeviceDatas)
+            {
+                foreach (var device in deviceList.Value)
+                {
+                    device.TrialNumber = trailNumber++;
+                }
+            }
 
             if (ErrorsOccurred)
             {
@@ -132,7 +138,7 @@ namespace SPEAR.Parsers.Devices
             // Wait for thread to zip files
             thread.Join();
 
-            deviceDatasParsed = sortedDeviceDatas.Values.ToList();
+            deviceDatasParsed = sortedDeviceDatas.Values.SelectMany(x => x).ToList();
         }
 
         private void Clear()
@@ -186,7 +192,7 @@ namespace SPEAR.Parsers.Devices
             {
                 var radInstrumentInformationType = radInstrumentDataType.RadInstrumentInformation;
                 if (radInstrumentInformationType == null)
-                    return false;
+                    throw new Exception("'radInstrumentInformationType' not found");
 
                 // Get DeviceType
                 deviceData.DeviceType = radInstrumentInformationType.RadInstrumentManufacturerName + " " + radInstrumentInformationType.RadInstrumentModelName;
@@ -227,8 +233,8 @@ namespace SPEAR.Parsers.Devices
                         break;
                 }
 
-                if (radMeasurementFound == false || analysisFound == false)
-                    return false;
+                if (radMeasurementFound == false)
+                    throw new Exception("'radMeasurementFound' not found");
 
                 // Get StartTime
                 deviceData.StartDateTime = radMeasurementType.StartDateTime_DateTime;
@@ -241,10 +247,12 @@ namespace SPEAR.Parsers.Devices
                 // Get CountRate
                 var grossCounts = radMeasurementType.GrossCounts.SingleOrDefault(x => x.id == "ForegroundMeasurement-MCA-GrossCounts");
                 if (grossCounts == null)
-                    return false;
+                    throw new Exception("'GrossCounts' not found");
                 deviceData.CountRate = Convert.ToDouble(grossCounts.CountData);
 
                 // Get Identified Nuclides
+                if (analysisFound == false)
+                    return true;
                 var nuclides = analysisResultsType.NuclideAnalysisResults.Nuclide;
                 if (nuclides == null)
                     return true;
